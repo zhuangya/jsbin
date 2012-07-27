@@ -88,6 +88,7 @@ function getPreparedCode(nojs) {
       if (js.trim()) js += '\n\n// created @ ' + two(date.getHours()) + ':' + two(date.getMinutes()) + ':' + two(date.getSeconds());
     } catch (e) {
       console && console.error(e.message);
+      js = '';
     }
   }
 

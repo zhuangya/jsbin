@@ -121,13 +121,67 @@ var processors = jsbin.processors = {
       return css;
     });
   },
-  traceur: function () {
-    jsbin.panels.panels.javascript.type = 'traceur';
+  traceur: function (ready) {
+    var iframe = document.createElement('iframe');
+    document.body.appendChild(iframe);
+    var doc = iframe.contentDocument,
+        win = iframe.contentWindow,
+        callback = function (source) { console.log("Traceur not ready yet"); return source; },
+        log = function () {
+          if (jsbin.panels.panels.console.visible) {
+            window._console.log.apply(window._console, arguments);
+          } else {
+            window.console.log.apply(window.console, arguments);
+          }
+        };
+
+    iframe.onload = function () {
+      console.log('iframe load event');
+// return;
+      iframe.parentNode.removeChild(iframe);
+      var traceur = win.traceur;
+      var ProjectWriter = traceur.outputgeneration.ProjectWriter;
+      var ErrorReporter = traceur.util.ErrorReporter;
+
+      var reporter = new ErrorReporter();
+      reporter.reportMessageInternal = function(location, kind, format, args) {
+        log(ErrorReporter.format(location, format, args));
+      };
+
+      callback = function (contents) {
+        var project = new traceur.semantics.symbols.Project(jsbin.getURL());
+        var name = 'jsbin';
+        var sourceFile = new traceur.syntax.SourceFile(name, contents);
+        project.addFile(sourceFile);
+        var res = traceur.codegeneration.Compiler.compile(reporter, project, false);
+
+        if (reporter.hadError()) {
+          // do nothing?
+          console.log('errors')
+          return '';
+        } else {
+          var options;
+          // console.log('it is ok', ProjectWriter.write(res, options))
+          return ProjectWriter.write(res, options);
+        }
+      };
+      ready && ready();
+    };
+
+    iframe.style.display = 'none';
+
+    doc.open();
+    doc.write('<' + 'body><' + 'script src="http://traceur-compiler.googlecode.com/git/src/traceur.js"><' + '/script><' + 'script src="http://traceur-compiler.googlecode.com/git/src/bootstrap.js"><' + '/script>');
+    doc.close();
+
+    // jsbin.panels.panels.javascript.type = 'traceur';
 
     // force select the traceur in the client HTML
     $('#library').val( $('#library').find(':contains("Traceur")').val() ).trigger('change');
-    ready();
-    return function (source) { return source; };
+
+    return function () {
+      return callback.apply(this, arguments);
+    };
   }
 };
 

@@ -1,15 +1,16 @@
 {
-  "author": [{
-    "name": "Remy Sharp",
-    "email": "remy@remysharp.com",
-    "web": "http://remysharp.com"
-  }],
+  "author": [
+    {
+      "name": "Remy Sharp",
+      "email": "remy@remysharp.com",
+      "web": "http://remysharp.com"
+    }
+  ],
   "name": "jsbin",
   "description": "Collaborative JavaScript Debugging App",
-  "main": "lib/app",
+  "main": "./lib/app",
   "version": "3.0.0dev",
   "homepage": "http://jsbin.com",
-  "main": "./lib/app",
   "bin": "./bin/jsbin",
   "repository": {
     "type": "git",
@@ -22,7 +23,7 @@
     "express": "3.0.0alpha4",
     "asyncjs": "0.0.7",
     "hogan.js": "2.0.0",
-    "mysql": "0.9.5",
+    "mysql": "2.14.0",
     "sqlite3": "2.1.5",
     "bcrypt": "0.7.0",
     "nodemailer": "0.3.20",
@@ -32,9 +33,11 @@
   },
   "devDependencies": {},
   "optionalDependencies": {},
-  "licenses": [{
-    "type": "MIT",
-    "url": "http://rem.mit-license.org"
-  }],
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "http://rem.mit-license.org"
+    }
+  ],
   "private": true
 }
